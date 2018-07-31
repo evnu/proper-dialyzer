@@ -1,0 +1,899 @@
+
+%% File: "_build/default/lib/proper/src/proper_arith.erl"
+%% ------------------------------------------------------
+-spec list_remove(position(),[T]) -> [T].
+-spec list_update(position(),T,[T]) -> [T,...].
+-spec list_insert(position(),T,[T]) -> [T,...].
+-spec safe_map(fun((T) -> S),maybe_improper_list(T,T | [])) -> maybe_improper_list(S,S | []).
+-spec safe_map_tr(fun((T) -> S),maybe_improper_list(T,T | []) | T,[S]) -> maybe_improper_list(S,S | []).
+-spec safe_foldl(fun((T,A) -> A),A,maybe_improper_list(T,T | [])) -> A.
+-spec safe_any(fun((T) -> boolean()),maybe_improper_list(T,T | [])) -> boolean().
+-spec safe_zip([T],[S]) -> [{T,S}].
+-spec safe_zip_tr([T],[S],[{T,S}]) -> [{T,S}].
+-spec tuple_map(fun((T) -> S),loose_tuple(T)) -> loose_tuple(S).
+-spec cut_improper_tail(maybe_improper_list(T,T | [])) -> [T] | {[T],T}.
+-spec cut_improper_tail_tr(maybe_improper_list(T,T | []) | T,[T]) -> [T] | {[T],T}.
+-spec head_length(nonempty_improper_list(term(),term())) -> pos_integer().
+-spec head_length_tr(nonempty_improper_list(term(),term()) | term(),non_neg_integer()) -> pos_integer().
+-spec find_first(fun((T) -> boolean()),[T]) -> {position(),T} | 'none'.
+-spec find_first_tr(fun((T) -> boolean()),[T],position()) -> {position(),T} | 'none'.
+-spec filter(fun((T) -> boolean()),[T]) -> {[T],[position()]}.
+-spec partition(fun((T) -> boolean()),[T]) -> {[T],[position()],[T],[position()]}.
+-spec partition_tr(fun((T) -> boolean()),[T],position(),[T],[position()],[T],[position()]) -> {[T],[position()],[T],[position()]}.
+-spec remove([T],[position()]) -> [T].
+-spec remove_tr([T],[position()],position(),[T]) -> [T].
+-spec insert([T],[position()],[T]) -> [T].
+-spec insert_tr([T],[position()],[T],position(),[T]) -> [T].
+-spec unflatten([T],[length()]) -> [[T]].
+-spec remove_n(non_neg_integer(),{[T],[[T]]}) -> {[T],[[T]]}.
+-spec rand_start(seed()) -> 'ok'.
+-spec rand_restart(seed()) -> 'ok'.
+-spec rand_reseed() -> 'ok'.
+-spec rand_stop() -> 'ok'.
+-spec rand_int(non_neg_integer()) -> integer().
+-spec rand_non_neg_int(non_neg_integer()) -> non_neg_integer().
+-spec bounded_rand_non_neg_int(non_neg_integer(),non_neg_integer()) -> non_neg_integer().
+-spec rand_int(integer(),integer()) -> integer().
+-spec smart_rand_int(non_neg_integer(),integer(),integer()) -> integer().
+-spec wide_range_rand_int(non_neg_integer(),integer(),integer()) -> integer().
+-spec rand_float(non_neg_integer()) -> float().
+-spec rand_non_neg_float(non_neg_integer()) -> float().
+-spec rand_float(float(),float()) -> float().
+-spec zero_one_to_zero_inf(float()) -> float().
+-spec distribute(non_neg_integer(),non_neg_integer()) -> [non_neg_integer()].
+-spec distribute_tr(non_neg_integer(),pos_integer(),[non_neg_integer()]) -> [non_neg_integer()].
+-spec jumble([T]) -> [T].
+-spec jumble_tr([T],non_neg_integer(),[T]) -> [T].
+-spec rand_choose([T,...]) -> {position(),T}.
+-spec freq_choose([{frequency(),T},...]) -> {position(),T}.
+-spec freq_select(frequency(),[{frequency(),T}],position()) -> {position(),T}.
+
+%% File: "_build/default/lib/proper/src/proper_array.erl"
+%% ------------------------------------------------------
+-spec new() -> array(_T).
+-spec new(array_opts(T)) -> array(T).
+-spec new(array_size(),array_opts(T)) -> array(T).
+-spec is_array(term()) -> boolean().
+-spec size(array(_T)) -> array_size().
+-spec default(array(T)) -> T.
+-spec fix(array(T)) -> array(T).
+-spec is_fix(array(_T)) -> boolean().
+-spec relax(array(T)) -> array(T).
+-spec resize(array_size(),array(T)) -> array(T).
+-spec resize(array(T)) -> array(T).
+-spec set(array_indx(),T,array(T)) -> array(T).
+-spec get(array_indx(),array(T)) -> T.
+-spec reset(array_indx(),array(T)) -> array(T).
+-spec to_list(array(T)) -> [T].
+-spec sparse_to_list(array(T)) -> [T].
+-spec from_list([T]) -> array(T).
+-spec from_list([T],T) -> array(T).
+-spec to_orddict(array(T)) -> indx_pairs(T).
+-spec sparse_to_orddict(array(T)) -> indx_pairs(T).
+-spec from_orddict(indx_pairs(T)) -> array(T).
+-spec from_orddict(indx_pairs(T),T) -> array(T).
+-spec map(fun((array_indx(),T1) -> T2),array(T1)) -> array(T2).
+-spec sparse_map(fun((array_indx(),T1) -> T2),array(T1)) -> array(T2).
+-spec foldl(fun((array_indx(),T,A) -> A),A,array(T)) -> A.
+-spec sparse_foldl(fun((array_indx(),T,A) -> A),A,array(T)) -> A.
+-spec foldr(fun((array_indx(),T,A) -> A),A,array(T)) -> A.
+-spec sparse_foldr(fun((array_indx(),T,A) -> A),A,array(T)) -> A.
+-spec sparse_size(array(_T)) -> array_size().
+
+%% File: "_build/default/lib/proper/src/proper_dict.erl"
+%% -----------------------------------------------------
+-spec new() -> dict(_K,_V).
+-spec is_key(K,dict(K,_V)) -> boolean().
+-spec to_list(dict(K,V)) -> [{K,V}].
+-spec from_list([{K,V}]) -> dict(K,V).
+-spec size(dict(_K,_V)) -> non_neg_integer().
+-spec fetch(K,dict(K,V)) -> V.
+-spec find(K,dict(K,V)) -> {'ok',V} | 'error'.
+-spec fetch_keys(dict(K,_V)) -> [K].
+-spec erase(K,dict(K,V)) -> dict(K,V).
+-spec store(K,V,dict(K,V)) -> dict(K,V).
+-spec append(K,V,dict(K,[V])) -> dict(K,[V]).
+-spec append_list(K,[V],dict(K,[V])) -> dict(K,[V]).
+-spec update(K,fun((V) -> V),dict(K,V)) -> dict(K,V).
+-spec update(K,fun((V) -> V),V,dict(K,V)) -> dict(K,V).
+-spec update_counter(K,number(),dict(K,number())) -> dict(K,number()).
+-spec fold(fun((K,V,A) -> A),A,dict(K,V)) -> A.
+-spec map(fun((K,V1) -> V2),dict(K,V1)) -> dict(K,V2).
+-spec filter(fun((K,V) -> boolean()),dict(K,V)) -> dict(K,V).
+-spec merge(fun((K,V,V) -> V),dict(K,V),dict(K,V)) -> dict(K,V).
+
+%% File: "_build/default/lib/proper/src/proper.erl"
+%% ------------------------------------------------
+-spec grow_size(opts()) -> 'ok'.
+-spec tests_at_next_size(size(),opts()) -> {pos_integer(),size()}.
+-spec get_size(proper_types:type()) -> size() | 'undefined'.
+-spec global_state_init_size(size()) -> 'ok'.
+-spec global_state_init_size_seed(size(),seed()) -> 'ok'.
+-spec global_state_init(opts()) -> 'ok'.
+-spec global_state_reset(opts()) -> 'ok'.
+-spec global_state_erase() -> 'ok'.
+-spec spawn_link_migrate(fun(() -> 'ok')) -> pid().
+-spec save_counterexample(counterexample()) -> 'ok'.
+-spec counterexample() -> counterexample() | 'undefined'.
+-spec save_counterexamples([{mfa(),counterexample()}]) -> 'ok'.
+-spec counterexamples() -> [{mfa(),counterexample()}] | 'undefined'.
+-spec clean_garbage() -> 'ok'.
+-spec quickcheck(outer_test()) -> result().
+-spec quickcheck(outer_test(),user_opts()) -> result().
+-spec counterexample(outer_test()) -> long_result().
+-spec counterexample(outer_test(),user_opts()) -> long_result().
+-spec pure_check(outer_test()) -> result().
+-spec pure_check(outer_test(),user_opts()) -> result().
+-spec check_spec(mfa()) -> result().
+-spec check_spec(mfa(),user_opts()) -> result().
+-spec check(outer_test(),counterexample()) -> short_result().
+-spec check(outer_test(),counterexample(),user_opts()) -> short_result().
+-spec module(mod_name()) -> module_result().
+-spec module(mod_name(),user_opts()) -> module_result().
+-spec check_specs(mod_name()) -> module_result().
+-spec check_specs(mod_name(),user_opts()) -> module_result().
+-spec multi_test_prep(mod_name(),raw_test_kind(),user_opts()) -> module_result().
+-spec add_user_opt(user_opt(),user_opts()) -> [user_opt(),...].
+-spec parse_opts(user_opts()) -> opts().
+-spec parse_opts([user_opt()],opts()) -> opts().
+-spec parse_opt(user_opt(),opts()) -> opts().
+-spec peel_test(outer_test(),opts()) -> {test(),opts()}.
+-spec numtests(pos_integer(),outer_test()) -> numtests_clause().
+-spec fails(outer_test()) -> fails_clause().
+-spec on_output(output_fun(),outer_test()) -> on_output_clause().
+-spec forall(proper_types:raw_type(),dependent_test()) -> forall_clause().
+-spec conjunction([{tag(),test()}]) -> conjunction_clause().
+-spec implies(boolean(),delayed_test()) -> implies_clause().
+-spec collect(term(),test()) -> sample_clause().
+-spec collect(stats_printer(),term(),test()) -> sample_clause().
+-spec aggregate(sample(),test()) -> sample_clause().
+-spec aggregate(stats_printer(),sample(),test()) -> sample_clause().
+-spec classify(boolean(),term() | sample(),test()) -> sample_clause().
+-spec measure(title(),number() | [number()],test()) -> sample_clause().
+-spec whenfail(side_effects_fun(),delayed_test()) -> whenfail_clause().
+-spec trapexit(fun(() -> boolean())) -> trapexit_clause().
+-spec timeout(time_period(),fun(() -> boolean())) -> timeout_clause().
+-spec equals(term(),term()) -> whenfail_clause().
+-spec test(raw_test(),opts()) -> result().
+-spec inner_test(raw_test(),opts()) -> result().
+-spec retry(test(),counterexample(),opts()) -> short_result().
+-spec multi_test(mod_name(),raw_test_kind(),opts()) -> module_result().
+-spec mfa_test(mfa(),raw_test_kind(),opts()) -> long_result().
+-spec cook_test(raw_test(),opts()) -> test().
+-spec get_result(imm_result(),test(),opts()) -> {short_result(),long_result()}.
+-spec get_rerun_result(run_result()) -> short_result().
+-spec perform(pos_integer(),test(),opts()) -> imm_result().
+-spec perform(non_neg_integer(),pos_integer(),non_neg_integer(),test(),[sample()] | 'none',[stats_printer()] | 'none',opts()) -> imm_result().
+-spec add_samples([sample()],[sample()] | 'none') -> [sample()].
+-spec run(test()) -> run_result().
+-spec rerun(test(),boolean(),imm_testcase() | counterexample()) -> run_result().
+-spec run(test(),ctx()) -> run_result().
+-spec run_all([{tag(),test()}],sub_imm_testcases() | sub_counterexamples(),ctx()) -> run_result().
+-spec run_all([{tag(),test()}],sub_imm_testcases() | sub_counterexamples(),[{tag(),fail_reason()}],ctx()) -> run_result().
+-spec force(delayed_test(),ctx()) -> run_result().
+-spec force(proper_gen:instance(),dependent_test(),ctx()) -> run_result().
+-spec apply_args([proper_gen:instance()],lazy_test(),ctx()) -> run_result().
+-spec create_pass_result(ctx(),pass_reason()) -> #pass{performed::'undefined'}.
+-spec create_fail_result(ctx(),fail_reason()) -> #fail{performed::'undefined'}.
+-spec child(pid(),delayed_test(),ctx()) -> 'ok'.
+-spec clear_mailbox() -> 'ok'.
+-spec threw_exception(fun(),stacktrace()) -> boolean().
+-spec threw_exception_aux(fun(),mod_name(),fun_name(),arity() | [any()]) -> boolean().
+-spec clean_stacktrace(stacktrace()) -> stacktrace().
+-spec is_not_proper_call(call_record()) -> boolean().
+-spec clean_testcase(imm_testcase()) -> counterexample().
+-spec preclean_testcase(imm_testcase(),imm_counterexample()) -> imm_counterexample().
+-spec preclean_sub_imm_testcases(sub_imm_testcases(),sub_imm_counterexamples()) -> sub_imm_counterexamples().
+-spec finalize_counterexample(imm_counterexample()) -> counterexample().
+-spec finalize_input(imm_clean_input()) -> clean_input().
+-spec shrink(imm_testcase(),test(),fail_reason(),opts()) -> {'ok',imm_testcase()} | error().
+-spec fix_shrink(imm_testcase(),stripped_test(),fail_reason(),non_neg_integer(),non_neg_integer(),opts()) -> shrinking_result().
+-spec shrink(imm_testcase(),imm_testcase(),stripped_test(),fail_reason(),non_neg_integer(),non_neg_integer(),proper_shrink:state(),opts()) -> shrinking_result().
+-spec shrink_all(imm_testcase(),sub_imm_testcases(),sub_imm_testcases(),[{tag(),test()}],[{tag(),fail_reason()}],non_neg_integer(),non_neg_integer(),opts()) -> shrinking_result().
+-spec still_fails(proper_gen:imm_instance(),imm_testcase(),dependent_test(),fail_reason()) -> boolean().
+-spec same_fail_reason(fail_reason(),fail_reason()) -> boolean().
+-spec same_exc_reason(exc_reason(),exc_reason()) -> boolean().
+-spec same_sub_reason({tag(),fail_reason()},{tag(),fail_reason()}) -> boolean().
+-spec skip_to_next(test()) -> stripped_test().
+-spec force_skip(delayed_test()) -> stripped_test().
+-spec force_skip(proper_gen:instance(),dependent_test()) -> stripped_test().
+-spec apply_skip([proper_gen:instance()],lazy_test()) -> stripped_test().
+-spec report_imm_result(imm_result(),opts()) -> 'ok'.
+-spec report_rerun_result(run_result(),opts()) -> 'ok'.
+-spec report_error(error_reason(),output_fun()) -> 'ok'.
+-spec report_fail_reason(fail_reason(),string(),output_fun()) -> 'ok'.
+-spec print_imm_testcase(imm_testcase(),string(),output_fun()) -> 'ok'.
+-spec print_imm_counterexample(imm_counterexample(),string(),output_fun()) -> 'ok'.
+-spec print_imm_clean_input(imm_clean_input(),string(),output_fun()) -> 'ok'.
+-spec execute_actions(fail_actions()) -> 'ok'.
+-spec report_shrinking(non_neg_integer(),imm_testcase(),fail_actions(),output_fun()) -> 'ok'.
+-spec apply_stats_printer(stats_printer(),sample(),output_fun()) -> 'ok'.
+-spec with_title(title()) -> stats_printer().
+-spec plain_stats_printer(sample(),output_fun(),title()) -> 'ok'.
+-spec print_title(title(),output_fun()) -> 'ok'.
+-spec process_sorted_sample(sample()) -> freq_sample().
+-spec get_freqs(sample(),freq_sample()) -> freq_sample().
+-spec remove_all(term(),frequency(),sample()) -> {frequency(),sample()}.
+-spec numeric_with_title(title()) -> stats_printer().
+-spec num_stats_printer([number()],output_fun(),title()) -> 'ok'.
+-spec get_numeric_stats([]) -> {'undefined','undefined','undefined'}
+    ; ([number(),...]) -> numeric_stats().
+-spec avg_and_last([number(),...],number(),non_neg_integer()) -> {float(),number()}.
+
+%% File: "_build/default/lib/proper/src/proper_fsm.erl"
+%% ----------------------------------------------------
+-spec behaviour_info('callbacks') -> [{fun_name(),arity()}].
+-spec commands(mod_name()) -> proper_types:type().
+-spec commands(mod_name(),fsm_state()) -> proper_types:type().
+-spec run_commands(mod_name(),command_list()) -> {history(),fsm_state(),fsm_result()}.
+-spec run_commands(mod_name(),command_list(),proper_symb:var_values()) -> {history(),fsm_state(),fsm_result()}.
+-spec state_names(history()) -> [state_name()].
+-spec initial_state(mod_name()) -> state().
+-spec command(state()) -> proper_types:type().
+-spec precondition(state(),symb_call()) -> boolean().
+-spec next_state(state(),symb_var() | cmd_result(),symb_call()) -> state().
+-spec postcondition(state(),symb_call(),cmd_result()) -> boolean().
+-spec tmp_commands(mod_name(),command_list()) -> [tmp_command()].
+-spec get_transitions(mod_name(),state_name(),state_data()) -> [transition()].
+-spec choose_transition(mod_name(),state_name(),[transition()]) -> proper_types:type().
+-spec choose_uniform_transition([transition()]) -> proper_types:type().
+-spec choose_weighted_transition(mod_name(),state_name(),[transition()]) -> proper_types:type().
+-spec cook_history(state_name(),state_name()) -> state_name().
+-spec is_exported(mod_name(),{fun_name(),arity()}) -> boolean().
+-spec transition_target(mod_name(),state_name(),state_data(),symb_call()) -> state_name().
+-spec target_states(mod_name(),state_name(),state_data(),symb_call()) -> [state_name()].
+-spec find_target([transition()],symb_call(),[state_name()]) -> [state_name()].
+-spec is_compatible(symb_call(),symb_call()) -> boolean().
+-spec get_mfa(symb_call()) -> mfa().
+
+%% File: "_build/default/lib/proper/src/proper_gb_sets.erl"
+%% --------------------------------------------------------
+-spec empty() -> gb_set(_T).
+-spec new() -> gb_set(_T).
+-spec is_empty(gb_set(_T)) -> boolean().
+-spec size(gb_set(_T)) -> non_neg_integer().
+-spec singleton(T) -> gb_set(T).
+-spec is_element(T,gb_set(T)) -> boolean().
+-spec is_member(T,gb_set(T)) -> boolean().
+-spec insert(T,gb_set(T)) -> gb_set(T).
+-spec balance(gb_set(T)) -> gb_set(T).
+-spec add_element(T,gb_set(T)) -> gb_set(T).
+-spec add(T,gb_set(T)) -> gb_set(T).
+-spec from_list([T]) -> gb_set(T).
+-spec from_ordset(proper_ordsets:ordset(T)) -> gb_set(T).
+-spec del_element(T,gb_set(T)) -> gb_set(T).
+-spec delete_any(T,gb_set(T)) -> gb_set(T).
+-spec delete(T,gb_set(T)) -> gb_set(T).
+-spec take_smallest(gb_set(T)) -> {T,gb_set(T)}.
+-spec smallest(gb_set(T)) -> T.
+-spec take_largest(gb_set(T)) -> {T,gb_set(T)}.
+-spec largest(gb_set(T)) -> T.
+-spec to_list(gb_set(T)) -> [T].
+-spec iterator(gb_set(T)) -> iterator(T).
+-spec next(iterator(T)) -> {T,iterator(T)} | 'none'.
+-spec union(gb_set(T),gb_set(T)) -> gb_set(T).
+-spec union([gb_set(T)]) -> gb_set(T).
+-spec intersection(gb_set(T),gb_set(T)) -> gb_set(T).
+-spec intersection([gb_set(T),...]) -> gb_set(T).
+-spec is_disjoint(gb_set(T),gb_set(T)) -> boolean().
+-spec subtract(gb_set(T),gb_set(T)) -> gb_set(T).
+-spec difference(gb_set(T),gb_set(T)) -> gb_set(T).
+-spec is_subset(gb_set(T),gb_set(T)) -> boolean().
+-spec is_set(term()) -> boolean().
+-spec filter(fun((T) -> boolean()),gb_set(T)) -> gb_set(T).
+-spec fold(fun((T,A) -> A),A,gb_set(T)) -> A.
+
+%% File: "_build/default/lib/proper/src/proper_gb_trees.erl"
+%% ---------------------------------------------------------
+-spec empty() -> gb_tree(_K,_V).
+-spec is_empty(gb_tree(_K,_V)) -> boolean().
+-spec size(gb_tree(_K,_V)) -> non_neg_integer().
+-spec lookup(K,gb_tree(K,V)) -> 'none' | {'value',V}.
+-spec is_defined(K,gb_tree(K,_V)) -> boolean().
+-spec get(K,gb_tree(K,V)) -> V.
+-spec update(K,V,gb_tree(K,V)) -> gb_tree(K,V).
+-spec insert(K,V,gb_tree(K,V)) -> gb_tree(K,V).
+-spec enter(K,V,gb_tree(K,V)) -> gb_tree(K,V).
+-spec balance(gb_tree(K,V)) -> gb_tree(K,V).
+-spec from_orddict(proper_orddict:orddict(K,V)) -> gb_tree(K,V).
+-spec delete_any(K,gb_tree(K,V)) -> gb_tree(K,V).
+-spec delete(K,gb_tree(K,V)) -> gb_tree(K,V).
+-spec take_smallest(gb_tree(K,V)) -> {K,V,gb_tree(K,V)}.
+-spec smallest(gb_tree(K,V)) -> {K,V}.
+-spec take_largest(gb_tree(K,V)) -> {K,V,gb_tree(K,V)}.
+-spec largest(gb_tree(K,V)) -> {K,V}.
+-spec to_list(gb_tree(K,V)) -> [{K,V}].
+-spec keys(gb_tree(K,_V)) -> [K].
+-spec values(gb_tree(_K,V)) -> [V].
+-spec iterator(gb_tree(K,V)) -> iterator(K,V).
+-spec next(iterator(K,V)) -> 'none' | {K,V,iterator(K,V)}.
+-spec map(fun((K,V1) -> V2),gb_tree(K,V1)) -> gb_tree(K,V2).
+
+%% File: "_build/default/lib/proper/src/proper_gen.erl"
+%% ----------------------------------------------------
+-spec safe_generate(proper_types:raw_type()) -> {'ok',imm_instance()} | {'error',error_reason()}.
+-spec generate(proper_types:raw_type()) -> imm_instance().
+-spec add_parameters(proper_types:type()) -> 'ok'.
+-spec remove_parameters(proper_types:type()) -> 'ok'.
+-spec generate(proper_types:type(),non_neg_integer(),'none' | {'ok',imm_instance()}) -> imm_instance().
+-spec pick(Type::proper_types:raw_type()) -> {'ok',instance()} | 'error'.
+-spec pick(Type::proper_types:raw_type(),size()) -> {'ok',instance()} | 'error'.
+-spec pick(Type::proper_types:raw_type(),size(),seed()) -> {'ok',instance()} | 'error'.
+-spec sample(Type::proper_types:raw_type()) -> 'ok'.
+-spec sample(Type::proper_types:raw_type(),size(),size()) -> 'ok'.
+-spec sampleshrink(Type::proper_types:raw_type()) -> 'ok'.
+-spec sampleshrink(Type::proper_types:raw_type(),size()) -> 'ok'.
+-spec keep_shrinking(imm_instance(),[imm_instance()],proper_types:type()) -> [imm_instance(),...].
+-spec keep_shrinking(_,[any()],proper_types:type(),'init' | {'shrinker',nonempty_maybe_improper_list(),[any()],_}) -> [any(),...].
+-spec contains_fun(term()) -> boolean().
+-spec normal_gen(proper_types:type()) -> imm_instance().
+-spec alt_gens(proper_types:type()) -> [imm_instance()].
+-spec clean_instance(imm_instance()) -> instance().
+-spec integer_gen(size(),proper_types:extint(),proper_types:extint()) -> integer().
+-spec float_gen(size(),proper_types:extnum(),proper_types:extnum()) -> float().
+-spec atom_gen(size()) -> proper_types:type().
+-spec atom_rev(atom()) -> imm_instance().
+-spec binary_gen(size()) -> proper_types:type().
+-spec binary_rev(binary()) -> imm_instance().
+-spec binary_len_gen(length()) -> proper_types:type().
+-spec bitstring_gen(size()) -> proper_types:type().
+-spec bitstring_rev(bitstring()) -> imm_instance().
+-spec bitstring_len_gen(length()) -> proper_types:type().
+-spec list_gen(size(),proper_types:type()) -> [imm_instance()].
+-spec distlist_gen(size(),sized_generator(),boolean()) -> [imm_instance()].
+-spec vector_gen(length(),proper_types:type()) -> [imm_instance()].
+-spec vector_gen_tr(length(),proper_types:type(),[imm_instance()]) -> [imm_instance()].
+-spec union_gen([proper_types:type(),...]) -> imm_instance().
+-spec weighted_union_gen([{frequency(),proper_types:type()},...]) -> imm_instance().
+-spec safe_union_gen([proper_types:type(),...]) -> imm_instance().
+-spec safe_weighted_union_gen([{frequency(),proper_types:type()},...]) -> imm_instance().
+-spec tuple_gen([proper_types:type()]) -> tuple().
+-spec loose_tuple_gen(size(),proper_types:type()) -> proper_types:type().
+-spec loose_tuple_rev(tuple(),proper_types:type()) -> imm_instance().
+-spec exactly_gen(T) -> T.
+-spec fixed_list_gen([proper_types:type()]) -> imm_instance()
+    ; ({[proper_types:type()],proper_types:type()}) -> maybe_improper_list(imm_instance(),imm_instance() | []).
+-spec function_gen(arity(),proper_types:type()) -> fun().
+-spec any_gen(size()) -> imm_instance().
+-spec real_any_gen(size()) -> imm_instance().
+-spec native_type_gen(mod_name(),string()) -> proper_types:type().
+-spec create_fun(arity(),proper_types:type(),fun_seed()) -> fun().
+-spec get_ret_type(fun()) -> proper_types:type().
+-spec function_body([term()],proper_types:type(),fun_seed()) -> proper_types:type() | instance().
+-spec update_seed({integer(),integer(),non_neg_integer()}) -> 'ok'.
+
+%% File: "_build/default/lib/proper/src/proper_orddict.erl"
+%% --------------------------------------------------------
+-spec new() -> orddict(_K,_V).
+-spec is_key(K,orddict(K,_V)) -> boolean().
+-spec to_list(orddict(K,V)) -> [{K,V}].
+-spec from_list([{K,V}]) -> orddict(K,V).
+-spec size(orddict(_K,_V)) -> non_neg_integer().
+-spec fetch(K,orddict(K,V)) -> V.
+-spec find(K,orddict(K,V)) -> {'ok',V} | 'error'.
+-spec fetch_keys(orddict(K,_V)) -> [K].
+-spec erase(K,orddict(K,V)) -> orddict(K,V).
+-spec store(K,V,orddict(K,V)) -> orddict(K,V).
+-spec append(K,V,orddict(K,[V])) -> orddict(K,[V]).
+-spec append_list(K,[V],orddict(K,[V])) -> orddict(K,[V]).
+-spec update(K,fun((V) -> V),orddict(K,V)) -> orddict(K,V).
+-spec update(K,fun((V) -> V),V,orddict(K,V)) -> orddict(K,V).
+-spec update_counter(K,number(),orddict(K,number())) -> orddict(K,number()).
+-spec fold(fun((K,V,A) -> A),A,orddict(K,V)) -> A.
+-spec map(fun((K,V1) -> V2),orddict(K,V1)) -> orddict(K,V2).
+-spec filter(fun((K,V) -> boolean()),orddict(K,V)) -> orddict(K,V).
+-spec merge(fun((K,V,V) -> V),orddict(K,V),orddict(K,V)) -> orddict(K,V).
+
+%% File: "_build/default/lib/proper/src/proper_ordsets.erl"
+%% --------------------------------------------------------
+-spec new() -> ordset(_T).
+-spec is_set(term()) -> boolean().
+-spec size(ordset(_T)) -> non_neg_integer().
+-spec to_list(ordset(T)) -> [T].
+-spec from_list([T]) -> ordset(T).
+-spec is_element(T,ordset(T)) -> boolean().
+-spec add_element(T,ordset(T)) -> ordset(T).
+-spec del_element(T,ordset(T)) -> ordset(T).
+-spec union(ordset(T),ordset(T)) -> ordset(T).
+-spec union([ordset(T)]) -> ordset(T).
+-spec intersection(ordset(T),ordset(T)) -> ordset(T).
+-spec intersection([ordset(T),...]) -> ordset(T).
+-spec is_disjoint(ordset(T),ordset(T)) -> boolean().
+-spec subtract(ordset(T),ordset(T)) -> ordset(T).
+-spec is_subset(ordset(T),ordset(T)) -> boolean().
+-spec fold(fun((T,S) -> S),S,ordset(T)) -> S.
+-spec filter(fun((T) -> boolean()),ordset(T)) -> ordset(T).
+
+%% File: "_build/default/lib/proper/src/proper_prop_remover.erl"
+%% -------------------------------------------------------------
+-spec parse_transform([abs_form()],[compile:option()]) -> [abs_form()].
+-spec safe_form(abs_form()) -> boolean().
+-spec safe_clause(abs_clause()) -> boolean().
+-spec safe_expr(abs_expr()) -> boolean().
+-spec safe_field_init(abs_rec_field()) -> boolean().
+
+%% File: "_build/default/lib/proper/src/proper_queue.erl"
+%% ------------------------------------------------------
+-spec new() -> queue(_T).
+-spec is_queue(term()) -> boolean().
+-spec is_empty(queue(_T)) -> boolean().
+-spec len(queue(_T)) -> non_neg_integer().
+-spec to_list(queue(T)) -> [T].
+-spec from_list([T]) -> queue(T).
+-spec member(T,queue(T)) -> boolean().
+-spec in(T,queue(T)) -> queue(T).
+-spec in_r(T,queue(T)) -> queue(T).
+-spec out(queue(T)) -> {'empty' | {'value',T},queue(T)}.
+-spec out_r(queue(T)) -> {'empty' | {'value',T},queue(T)}.
+-spec get(queue(T)) -> T.
+-spec get_r(queue(T)) -> T.
+-spec peek(queue(T)) -> 'empty' | {'value',T}.
+-spec peek_r(queue(T)) -> 'empty' | {'value',T}.
+-spec drop(queue(T)) -> queue(T).
+-spec drop_r(queue(T)) -> queue(T).
+-spec reverse(queue(T)) -> queue(T).
+-spec join(queue(T),queue(T)) -> queue(T).
+-spec split(non_neg_integer(),queue(T)) -> {queue(T),queue(T)}.
+-spec filter(fun((T) -> boolean() | [T]),queue(T)) -> queue(T).
+-spec cons(T,queue(T)) -> queue(T).
+-spec head(queue(T)) -> T.
+-spec tail(queue(T)) -> queue(T).
+-spec snoc(queue(T),T) -> queue(T).
+-spec daeh(queue(T)) -> T.
+-spec last(queue(T)) -> T.
+-spec liat(queue(T)) -> queue(T).
+-spec lait(queue(T)) -> queue(T).
+-spec init(queue(T)) -> queue(T).
+
+%% File: "_build/default/lib/proper/src/proper_sets.erl"
+%% -----------------------------------------------------
+-spec new() -> set(_T).
+-spec is_set(term()) -> boolean().
+-spec size(set(_T)) -> non_neg_integer().
+-spec to_list(set(T)) -> [T].
+-spec from_list([T]) -> set(T).
+-spec is_element(T,set(T)) -> boolean().
+-spec add_element(T,set(T)) -> set(T).
+-spec del_element(T,set(T)) -> set(T).
+-spec union(set(T),set(T)) -> set(T).
+-spec union([set(T)]) -> set(T).
+-spec intersection(set(T),set(T)) -> set(T).
+-spec intersection([set(T),...]) -> set(T).
+-spec is_disjoint(set(T),set(T)) -> boolean().
+-spec subtract(set(T),set(T)) -> set(T).
+-spec is_subset(set(T),set(T)) -> boolean().
+-spec fold(fun((T,A) -> A),A,set(T)) -> A.
+-spec filter(fun((T) -> boolean()),set(T)) -> set(T).
+
+%% File: "_build/default/lib/proper/src/proper_shrink.erl"
+%% -------------------------------------------------------
+-spec shrink(proper_gen:imm_instance(),proper_types:type(),state()) -> {[proper_gen:imm_instance()],state()}.
+-spec get_shrinkers(proper_types:type()) -> [shrinker()].
+-spec alternate_shrinker(proper_gen:imm_instance(),proper_types:type(),state()) -> {[proper_gen:imm_instance()],state()}.
+-spec unwrap_shrinker(proper_gen:imm_instance(),proper_types:type(),state()) -> {[proper_gen:imm_instance()],state()}.
+-spec to_part_shrinker(proper_gen:imm_instance(),proper_types:type(),state()) -> {[proper_gen:imm_instance()],state()}.
+-spec parts_shrinker(proper_gen:imm_instance(),proper_types:type(),state()) -> {[proper_gen:imm_instance()],state()}.
+-spec try_combine(proper_gen:imm_instance(),proper_gen:imm_instance(),proper_gen:combine_fun()) -> {'ok',proper_gen:imm_instance()} | 'error'.
+-spec in_shrinker(proper_gen:imm_instance(),proper_types:type(),state()) -> {[proper_gen:imm_instance()],state()}.
+-spec split_shrinker(proper_gen:imm_instance(),proper_types:type(),state()) -> {[proper_gen:imm_instance()],state()}.
+-spec slice(proper_gen:imm_instance(),proper_types:type(),pos_integer(),length()) -> {[proper_gen:imm_instance()],[proper_gen:imm_instance()]}.
+-spec take_slice(proper_gen:imm_instance(),proper_types:type(),pos_integer(),length()) -> {proper_gen:imm_instance(),proper_gen:imm_instance()}.
+-spec remove_shrinker(proper_gen:imm_instance(),proper_types:type(),state()) -> {[proper_gen:imm_instance()],state()}.
+-spec elements_shrinker(proper_gen:imm_instance(),proper_types:type(),state()) -> {[proper_gen:imm_instance()],state()}.
+-spec number_shrinker(number(),proper_types:extnum(),proper_types:extnum(),state()) -> {[number()],state()}.
+-spec find_target(number(),number(),number()) -> {number(),fun((number()) -> number()),fun((number()) -> boolean())}.
+-spec find_limit(number(),number(),number(),number()) -> number().
+-spec sign(number()) -> number().
+-spec zero(number()) -> number().
+-spec union_first_choice_shrinker(proper_gen:imm_instance(),[proper_types:type()],state()) -> {[proper_gen:imm_instance()],state()}.
+-spec union_recursive_shrinker(proper_gen:imm_instance(),[proper_types:type()],state()) -> {[proper_gen:imm_instance()],state()}.
+-spec first_plausible_choice(proper_gen:imm_instance(),[proper_types:type()]) -> {position(),proper_types:type()} | 'none'.
+
+%% File: "_build/default/lib/proper/src/proper_statem.erl"
+%% -------------------------------------------------------
+-spec behaviour_info('callbacks') -> [{fun_name(),arity()}].
+-spec commands(mod_name()) -> proper_types:type().
+-spec commands(mod_name(),symbolic_state()) -> proper_types:type().
+-spec commands(size(),mod_name(),symbolic_state(),pos_integer()) -> proper_types:type().
+-spec more_commands(pos_integer(),proper_types:type()) -> proper_types:type().
+-spec parallel_commands(mod_name()) -> proper_types:type().
+-spec parallel_commands(mod_name(),symbolic_state()) -> proper_types:type().
+-spec parallel_gen(mod_name()) -> proper_types:type().
+-spec parallel_gen(mod_name(),symbolic_state()) -> proper_types:type().
+-spec mk_parallel_testcase(mod_name(),command_list()) -> proper_types:type().
+-spec parallel_shrinker(mod_name(),command_list(),[command_list()]) -> proper_types:type().
+-spec move_shrinker(command_list(),[command_list()],index()) -> proper_types:type().
+-spec run_commands(mod_name(),command_list()) -> {history(),dynamic_state(),statem_result()}.
+-spec run_commands(mod_name(),command_list(),proper_symb:var_values()) -> {history(),dynamic_state(),statem_result()}.
+-spec run(mod_name(),command_list(),proper_symb:var_values()) -> {{history(),dynamic_state(),statem_result()},proper_symb:var_values()}.
+-spec run_commands(command_list(),proper_symb:var_values(),mod_name(),history(),dynamic_state()) -> {{history(),dynamic_state(),statem_result()},proper_symb:var_values()}.
+-spec check_precondition(mod_name(),dynamic_state(),symb_call()) -> boolean() | proper:exception().
+-spec check_postcondition(mod_name(),dynamic_state(),symb_call(),term()) -> boolean() | proper:exception().
+-spec safe_apply(mod_name(),fun_name(),[term()]) -> {'ok',term()} | {'error',proper:exception()}.
+-spec run_parallel_commands(mod_name(),parallel_testcase()) -> {history(),[parallel_history()],statem_result()}.
+-spec run_parallel_commands(mod_name(),parallel_testcase(),proper_symb:var_values()) -> {history(),[parallel_history()],statem_result()}.
+-spec execute(command_list(),proper_symb:var_values(),mod_name(),parallel_history()) -> parallel_history().
+-spec pmap(fun((command_list()) -> parallel_history()),[command_list()]) -> [parallel_history()].
+-spec spawn_jobs(fun((command_list()) -> parallel_history()),[command_list()]) -> [pid()].
+-spec await([pid()]) -> [parallel_history()].
+-spec check(mod_name(),dynamic_state(),proper_symb:var_values(),boolean(),[parallel_history()],[parallel_history()]) -> boolean().
+-spec command_names(command_list() | parallel_testcase()) -> [mfa()].
+-spec state_after(mod_name(),command_list()) -> symbolic_state().
+-spec state_env_after(mod_name(),command_list()) -> {symbolic_state(),[symb_var()]}.
+-spec zip([A],[B]) -> [{A,B}].
+-spec is_valid(mod_name(),symbolic_state(),command_list(),[symb_var()]) -> boolean().
+-spec args_defined([term()],[symb_var()]) -> boolean().
+-spec arg_defined(term(),[symb_var()]) -> boolean().
+-spec get_initial_state(mod_name(),command_list()) -> symbolic_state().
+-spec fix_parallel(index(),non_neg_integer(),combination() | 'done',lookup(),mod_name(),symbolic_state(),[symb_var()],pos_integer()) -> [command_list()].
+-spec can_parallelize([command_list()],mod_name(),symbolic_state(),[symb_var()]) -> boolean().
+-spec possible_interleavings([command_list()]) -> [command_list()].
+-spec insert_all([term()],[term()]) -> [[term()]].
+-spec all_insertions(term(),pos_integer(),[term()]) -> [[term()]].
+-spec all_insertions_tr(term(),pos_integer(),non_neg_integer(),[term()],[term()],[[term()]]) -> [[term()]].
+-spec index(term(),[term(),...]) -> index().
+-spec index(term(),[term(),...],index()) -> index().
+-spec mk_dict(command_list(),pos_integer()) -> [{pos_integer(),command()}].
+-spec mk_first_comb(pos_integer(),non_neg_integer(),pos_integer()) -> combination().
+-spec mk_first_comb_tr(pos_integer(),pos_integer(),non_neg_integer(),combination(),pos_integer()) -> combination().
+-spec lookup_cmds(indices(),lookup()) -> command_list().
+-spec lookup_cmd_lists(combination(),lookup()) -> [command_list()].
+-spec get_next(combination(),non_neg_integer(),index(),indices(),pos_integer(),pos_integer()) -> combination() | 'done'.
+-spec next_comb(index(),indices(),indices()) -> indices() | 'done'.
+-spec is_well_defined(indices() | 'done',indices()) -> boolean().
+-spec next_comb_tr(index(),indices(),indices()) -> indices() | 'done'.
+-spec remove_slice(index(),command_list(),[command_list(),...]) -> [command_list(),...].
+-spec remove_slice_tr(index(),command_list(),[command_list(),...],[command_list()],pos_integer()) -> [command_list(),...].
+-spec get_slices(command_list()) -> [command_list()].
+-spec get_slices_tr(command_list(),command_list(),pos_integer(),[command_list()]) -> [command_list()].
+-spec spawn_link_cp(fun(() -> _)) -> pid().
+
+%% File: "_build/default/lib/proper/src/proper_symb.erl"
+%% -----------------------------------------------------
+-spec eval(symb_term()) -> term().
+-spec eval(var_values(),symb_term()) -> term().
+-spec eval(var_values(),symb_term(),caller()) -> term().
+-spec internal_eval(symb_term()) -> term().
+-spec defined(symb_term()) -> boolean().
+-spec defined(symb_term(),caller()) -> boolean().
+-spec well_defined(proper_types:raw_type()) -> proper_types:type().
+-spec well_defined(proper_types:raw_type(),caller()) -> proper_types:type().
+-spec internal_well_defined(proper_types:type()) -> proper_types:type().
+-spec pretty_print(symb_term()) -> string().
+-spec pretty_print(var_values(),symb_term()) -> string().
+-spec parse_fun(mod_name(),fun_name(),[abs_expr()]) -> abs_expr().
+-spec parse_term(term()) -> abs_expr().
+-spec symb_walk(var_values(),symb_term(),handle_info()) -> handled_term().
+-spec symb_walk_call(var_values(),mod_name(),fun_name(),[symb_term()],handle_info()) -> handled_term().
+-spec symb_walk_gen(var_values(),symb_term(),handle_info()) -> handled_term().
+
+%% File: "_build/default/lib/proper/src/proper_transformer.erl"
+%% ------------------------------------------------------------
+-spec parse_transform([abs_form()],[compile:option()]) -> [abs_form()].
+-spec collect_info([abs_form()],[compile:option()]) -> mod_info().
+-spec add_options(mod_info(),compile:option() | [compile:option()]) -> mod_info().
+-spec add_info(abs_form(),mod_info()) -> mod_info().
+-spec is_prop({fun_name(),arity()}) -> boolean().
+-spec add_exports([abs_form()],[{fun_name(),arity()}]) -> [abs_form()].
+-spec helper_start(mod_name(),proper_typeserver:mod_exp_types(),proper_typeserver:mod_exp_funs()) -> pid().
+-spec helper_stop(pid()) -> 'ok'.
+-spec is_exported_type(mod_name(),atom(),arity(),pid()) -> boolean().
+-spec helper_init(mod_name(),proper_typeserver:mod_exp_types(),proper_typeserver:mod_exp_funs()) -> 'ok'.
+-spec helper_loop(exp_dict()) -> 'ok'.
+-spec add_module(mod_name(),exp_dict()) -> exp_dict().
+-spec rewrite_form(abs_form(),mod_info()) -> abs_form().
+-spec rewrite_field_init(abs_rec_field(),mod_info()) -> abs_rec_field().
+-spec rewrite_clause(abs_clause(),mod_info()) -> abs_clause().
+-spec rewrite_expr(abs_expr(),mod_info()) -> abs_expr().
+-spec rewrite_type(abs_expr(),mod_info()) -> abs_expr().
+-spec native_type_call(mod_name(),abs_expr()) -> abs_expr().
+
+%% File: "_build/default/lib/proper/src/proper_types.erl"
+%% ------------------------------------------------------
+-spec cook_outer(raw_type()) -> proper_types:type().
+-spec is_type(term()) -> boolean().
+-spec equal_types(proper_types:type(),proper_types:type()) -> boolean().
+-spec is_raw_type(term()) -> boolean().
+-spec is_raw_type_list(maybe_improper_list()) -> boolean().
+-spec to_binary(proper_types:type()) -> binary().
+-spec from_binary(binary()) -> proper_types:type().
+-spec type_from_list([type_prop()]) -> proper_types:type().
+-spec add_prop(type_prop_name(),type_prop_value(),proper_types:type()) -> proper_types:type().
+-spec add_props([type_prop()],proper_types:type()) -> proper_types:type().
+-spec append_to_prop(type_prop_name(),type_prop_value(),proper_types:type()) -> proper_types:type().
+-spec append_list_to_prop(type_prop_name(),[type_prop_value()],proper_types:type()) -> proper_types:type().
+-spec get_prop(type_prop_name(),proper_types:type()) -> type_prop_value().
+-spec find_prop(type_prop_name(),proper_types:type()) -> {'ok',type_prop_value()} | 'error'.
+-spec new_type([type_prop()],type_kind()) -> proper_types:type().
+-spec subtype([type_prop()],proper_types:type()) -> proper_types:type().
+-spec is_inst(proper_gen:instance(),raw_type()) -> boolean() | {'error',{'typeserver',term()}}.
+-spec is_inst(proper_gen:instance(),raw_type(),size()) -> boolean() | {'error',{'typeserver',term()}}.
+-spec safe_is_instance(proper_gen:imm_instance(),raw_type()) -> boolean() | {'error',{'typeserver',term()}}.
+-spec is_instance(proper_gen:imm_instance(),raw_type()) -> boolean().
+-spec wrapper_test(proper_gen:imm_instance(),proper_types:type()) -> boolean().
+-spec unwrap(proper_types:type()) -> [proper_types:type(),...].
+-spec constructed_test(proper_gen:imm_instance(),proper_types:type()) -> boolean().
+-spec weakly({boolean(),boolean()}) -> boolean().
+-spec strongly({boolean(),boolean()}) -> boolean().
+-spec satisfies_all(proper_gen:instance(),proper_types:type()) -> {boolean(),boolean()}.
+-spec satisfies_all_1([{constraint_fun(),boolean()}],proper_gen:instance()) -> {boolean(),boolean()}.
+-spec satisfies_all_strict([{constraint_fun(),boolean()}],proper_gen:instance()) -> boolean().
+-spec lazy(proper_gen:nosize_generator()) -> proper_types:type().
+-spec sized(proper_gen:sized_generator()) -> proper_types:type().
+-spec bind(raw_type(),proper_gen:combine_fun(),boolean()) -> proper_types:type().
+-spec shrinkwith(proper_gen:nosize_generator(),proper_gen:alt_gens()) -> proper_types:type().
+-spec add_constraint(raw_type(),constraint_fun(),boolean()) -> proper_types:type().
+-spec native_type(mod_name(),string()) -> proper_types:type().
+-spec integer(extint(),extint()) -> proper_types:type().
+-spec integer_gen(proper_types:type(),non_neg_integer()) -> integer().
+-spec integer_is_instance(proper_types:type(),_) -> boolean().
+-spec number_shrinker(number(),proper_types:type(),'init' | {'shrunk',_,_} | {'inc',_,fun((_) -> any()),fun((_) -> any())}) -> {[number()],'done' | {'inc',_,fun((_) -> any()),fun((_) -> any())}}.
+-spec float(extnum(),extnum()) -> proper_types:type().
+-spec float_gen(proper_types:type(),non_neg_integer()) -> float().
+-spec float_is_instance(proper_types:type(),_) -> boolean().
+-spec le(extnum(),extnum()) -> boolean().
+-spec atom() -> proper_types:type().
+-spec atom_is_instance(_) -> boolean().
+-spec binary() -> proper_types:type().
+-spec binary(length()) -> proper_types:type().
+-spec binary_len_gen(proper_types:type()) -> proper_types:type().
+-spec binary_len_is_instance(proper_types:type(),_) -> boolean().
+-spec bitstring() -> proper_types:type().
+-spec bitstring(length()) -> proper_types:type().
+-spec bitstring_len_gen(proper_types:type()) -> proper_types:type().
+-spec bitstring_len_is_instance(proper_types:type(),_) -> boolean().
+-spec list(ElemType::raw_type()) -> proper_types:type().
+-spec list_gen(proper_types:type(),non_neg_integer()) -> [any()].
+-spec list_is_instance(proper_types:type(),_) -> boolean().
+-spec shrink_list([term()]) -> proper_types:type().
+-spec shrink_list_gen(proper_types:type()) -> any().
+-spec shrink_list_is_instance(proper_types:type(),[any()]) -> boolean().
+-spec is_sublist([term()],[term()]) -> boolean().
+-spec list_test(proper_gen:imm_instance(),proper_types:type()) -> boolean().
+-spec list_get_indices(proper_gen:generator(),[any()]) -> [position()].
+-spec distlist(size(),proper_gen:sized_generator(),boolean()) -> proper_types:type().
+-spec distlist_gen(proper_types:type()) -> [any()].
+-spec vector(length(),ElemType::raw_type()) -> proper_types:type().
+-spec vector_gen(proper_types:type()) -> [any()].
+-spec vector_is_instance(proper_types:type(),_) -> boolean().
+-spec vector_get_indices(proper_types:type(),_) -> [integer()].
+-spec union(ListOfTypes::[raw_type(),...]) -> proper_types:type().
+-spec union_gen(proper_types:type()) -> any().
+-spec union_is_instance(proper_types:type(),_) -> boolean().
+-spec union_shrinker_1(_,proper_types:type(),'init' | {'shrunk',_,'done'}) -> {[any()],'done'}.
+-spec union_shrinker_2(_,proper_types:type(),'init' | {'shrunk',pos_integer(),{'inner',_,_,{_,_,_,_}}} | {'inner',_,_,'done' | 'init' | {'shrunk',pos_integer(),{_,_,_,_}} | {'shrinker',maybe_improper_list(),_,_}}) -> {[any()],'done' | {'inner',_,proper_types:type(),'done' | {_,_,_,_}}}.
+-spec weighted_union(ListOfTypes::[{frequency(),raw_type()},...]) -> proper_types:type().
+-spec weighted_union_gen(proper_types:type()) -> any().
+-spec safe_union([raw_type(),...]) -> proper_types:type().
+-spec safe_union_gen(proper_types:type()) -> any().
+-spec safe_weighted_union([{frequency(),raw_type()},...]) -> proper_types:type().
+-spec safe_weighted_union_gen(proper_types:type()) -> any().
+-spec tuple(ListOfTypes::[raw_type()]) -> proper_types:type().
+-spec tuple_gen(proper_types:type()) -> tuple().
+-spec tuple_is_instance(proper_types:type(),_) -> boolean().
+-spec tuple_get_indices(proper_types:type(),_) -> [integer()].
+-spec tuple_update(index(),value(),tuple()) -> tuple().
+-spec loose_tuple(ElemType::raw_type()) -> proper_types:type().
+-spec loose_tuple_gen(proper_types:type(),non_neg_integer()) -> proper_types:type().
+-spec loose_tuple_rev(proper_types:type(),tuple()) -> {'$used',[any()],tuple()}.
+-spec loose_tuple_is_instance(proper_types:type(),_) -> boolean().
+-spec exactly(term()) -> proper_types:type().
+-spec exactly_gen(proper_types:type()) -> any().
+-spec exactly_is_instance(proper_types:type(),_) -> boolean().
+-spec fixed_list(ListOfTypes::maybe_improper_list(raw_type(),raw_type() | [])) -> proper_types:type().
+-spec fixed_list_gen(proper_types:type()) -> any().
+-spec fixed_list_is_instance(proper_types:type(),_) -> boolean().
+-spec fixed_list_get_indices(proper_types:type(),_) -> [integer()].
+-spec fixed_list_test(proper_gen:imm_instance(),[proper_types:type()] | {[proper_types:type()],proper_types:type()}) -> boolean().
+-spec improper_list_retrieve(index(),nonempty_improper_list(value(),value()),pos_integer()) -> value().
+-spec improper_list_update(index(),value(),nonempty_improper_list(value(),value()),pos_integer()) -> nonempty_improper_list(value(),value()).
+-spec function(ArgTypes::[raw_type()] | arity(),RetType::raw_type()) -> proper_types:type().
+-spec function_gen(proper_types:type()) -> fun().
+-spec function_is_instance(proper_types:type(),_) -> boolean().
+-spec any() -> proper_types:type().
+-spec integer() -> proper_types:type().
+-spec non_neg_integer() -> proper_types:type().
+-spec pos_integer() -> proper_types:type().
+-spec neg_integer() -> proper_types:type().
+-spec range(extint(),extint()) -> proper_types:type().
+-spec float() -> proper_types:type().
+-spec non_neg_float() -> proper_types:type().
+-spec number() -> proper_types:type().
+-spec boolean() -> proper_types:type().
+-spec byte() -> proper_types:type().
+-spec char() -> proper_types:type().
+-spec list() -> proper_types:type().
+-spec tuple() -> proper_types:type().
+-spec string() -> proper_types:type().
+-spec wunion([{frequency(),raw_type()},...]) -> proper_types:type().
+-spec term() -> proper_types:type().
+-spec timeout() -> proper_types:type().
+-spec arity() -> proper_types:type().
+-spec int() -> proper_types:type().
+-spec nat() -> proper_types:type().
+-spec largeint() -> proper_types:type().
+-spec real() -> proper_types:type().
+-spec bool() -> proper_types:type().
+-spec choose(extint(),extint()) -> proper_types:type().
+-spec elements([raw_type(),...]) -> proper_types:type().
+-spec oneof([raw_type(),...]) -> proper_types:type().
+-spec frequency([{frequency(),raw_type()},...]) -> proper_types:type().
+-spec return(term()) -> proper_types:type().
+-spec default(raw_type(),raw_type()) -> proper_types:type().
+-spec orderedlist(ElemType::raw_type()) -> proper_types:type().
+-spec function0(raw_type()) -> proper_types:type().
+-spec function1(raw_type()) -> proper_types:type().
+-spec function2(raw_type()) -> proper_types:type().
+-spec function3(raw_type()) -> proper_types:type().
+-spec function4(raw_type()) -> proper_types:type().
+-spec weighted_default({frequency(),raw_type()},{frequency(),raw_type()}) -> proper_types:type().
+-spec resize(size(),Type::raw_type()) -> proper_types:type().
+-spec non_empty(ListType::raw_type()) -> proper_types:type().
+-spec noshrink(Type::raw_type()) -> proper_types:type().
+-spec with_parameter(atom(),value(),Type::raw_type()) -> proper_types:type().
+-spec with_parameters([{atom(),value()}],Type::raw_type()) -> proper_types:type().
+-spec parameter(atom(),value()) -> value().
+-spec parameter(atom()) -> value().
+
+%% File: "_build/default/lib/proper/src/proper_typeserver.erl"
+%% -----------------------------------------------------------
+-spec start() -> 'ok'.
+-spec restart() -> 'ok'.
+-spec stop() -> 'ok'.
+-spec create_spec_test(mfa(),timeout(),false_positive_mfas()) -> rich_result(proper:test()).
+-spec get_exp_specced(mod_name()) -> rich_result([mfa()]).
+-spec get_type_repr(mod_name(),type_ref(),boolean()) -> rich_result(type_repr()).
+-spec translate_type(imm_type()) -> rich_result(fin_type()).
+-spec demo_translate_type(mod_name(),string()) -> rich_result(fin_type()).
+-spec demo_is_instance(term(),mod_name(),string()) -> boolean() | {'error',term()}.
+-spec init(_) -> {'ok',state()}.
+-spec handle_call(server_call(),_,state()) -> {'reply',server_response(),state()}.
+-spec handle_cast('stop',state()) -> {'stop','normal',state()}.
+-spec handle_info(term(),state()) -> {'stop',{'received_info',term()},state()}.
+-spec terminate(term(),state()) -> 'ok'.
+-spec code_change(term(),state(),_) -> {'ok',state()}.
+-spec create_spec_test(mfa(),timeout(),false_positive_mfas(),state()) -> rich_result2(proper:test(),state()).
+-spec get_exp_spec(mfa(),state()) -> rich_result2(fun_repr(),state()).
+-spec make_spec_test(mfa(),fun_repr(),timeout(),false_positive_mfas(),state()) -> rich_result2(proper:test(),state()).
+-spec apply_spec_test(mfa(),fun_repr(),timeout(),false_positive_mfas(),term()) -> proper:test().
+-spec get_exp_specced(mod_name(),state()) -> rich_result2([mfa()],state()).
+-spec get_type_repr(mod_name(),type_ref(),boolean(),state()) -> rich_result2(type_repr(),state()).
+-spec prepare_for_remote(mod_name(),type_name(),arity(),state()) -> rich_result(state()).
+-spec translate_type(imm_type(),state()) -> rich_result2(fin_type(),state()).
+-spec parse_type(string()) -> rich_result(abs_type()).
+-spec add_module(mod_name(),state()) -> rich_result(state()).
+-spec get_exp_info(mod_name()) -> rich_result2(mod_exp_types(),mod_exp_funs()).
+-spec get_code_and_exports(mod_name()) -> rich_result2([abs_form()],mod_exp_funs()).
+-spec get_code_and_exports_from_source(mod_name(),term()) -> rich_result2([abs_form()],mod_exp_funs()).
+-spec get_chunks(string() | binary()) -> rich_result2([abs_form()],mod_exp_funs()).
+-spec add_iolist([abs_form()]) -> [abs_form()].
+-spec get_mod_info(mod_name(),[abs_form()],mod_exp_funs()) -> mod_info().
+-spec store_hard_adt({imm_type_ref(),hard_adt_repr()},mod_types()) -> mod_types().
+-spec add_mod_info(abs_form(),mod_info()) -> mod_info().
+-spec process_rec_field(abs_rec_field()) -> {field_name(),abs_type()}.
+-spec process_fun_clause(abs_type()) -> fun_clause_repr().
+-spec store_mod_info(mod_name(),mod_info(),state()) -> state().
+-spec unbound_to_any(fun_ref(),fun_repr()) -> fun_repr().
+-spec process_adts(mod_name(),mod_info()) -> mod_info().
+-spec add_adt(mod_name(),imm_type_ref(),mod_info(),[proc_fun_ref()]) -> mod_info().
+-spec get_symb_call(full_imm_type_ref(),proc_fun_ref()) -> tagged_result2(abs_type(),[var_name()]).
+-spec unwrap_range(full_imm_type_ref(),abs_type() | next_step(),abs_type(),boolean()) -> tagged_result2(abs_type() | next_step(),[var_name()]).
+-spec unwrap_list(full_imm_type_ref(),abs_type() | next_step(),abs_type(),boolean()) -> tagged_result2(abs_type() | next_step(),[var_name()]).
+-spec fix_vars(full_imm_type_ref(),abs_type(),[var_name()],[var_name()]) -> tagged_result(abs_type()).
+-spec no_duplicates([any()]) -> boolean().
+-spec correct_var_use([[var_name() | 0]]) -> boolean().
+-spec collect_vars(full_imm_type_ref(),abs_type(),[[var_name() | 0]]) -> [[var_name() | 0]].
+-spec multi_collect_vars(full_imm_type_ref(),[abs_type()],[[var_name() | 0]]) -> [[var_name() | 0]].
+-spec update_vars(abs_type(),var_substs_dict(),boolean()) -> abs_type().
+-spec get_pattern(position(),[abs_type()]) -> pattern().
+-spec add_field(abs_type(),{non_neg_integer(),[pat_field()]}) -> {non_neg_integer(),[pat_field(),...]}.
+-spec match(pattern(),tuple()) -> term().
+-spec match([pat_field()],[term()],'none' | {'ok',T},boolean()) -> T.
+-spec can_be_tag(atom(),abs_type()) -> boolean().
+-spec cant_match(pattern(),abs_type()) -> boolean().
+-spec cant_have_head(abs_type()) -> boolean().
+-spec term_to_singleton_type(atom() | integer() | loose_tuple(atom() | integer())) -> abs_type().
+-spec is_instance(term(),mod_name(),abs_type()) -> boolean().
+-spec is_instance(term(),mod_name(),abs_type(),imm_stack()) -> boolean().
+-spec is_int_const(term(),abs_expr()) -> boolean().
+-spec list_test(term(),mod_name(),abs_type(),'dummy' | abs_type(),boolean(),boolean(),boolean()) -> boolean().
+-spec list_rec(term(),mod_name(),abs_type(),'dummy' | abs_type(),boolean(),boolean(),boolean()) -> boolean().
+-spec tuple_test([term()],mod_name(),[abs_type()]) -> boolean().
+-spec is_maybe_hard_adt(term(),mod_name(),type_name(),[abs_type()],imm_stack()) -> boolean().
+-spec is_custom_instance(term(),mod_name(),mod_name(),type_name(),[abs_type()],boolean(),imm_stack()) -> boolean().
+-spec get_abs_type(mod_name(),type_ref(),[abs_type()],boolean()) -> abs_type().
+-spec abs_expr_error(atom(),abs_expr()) -> no_return().
+-spec abs_expr_error(atom(),abs_expr(),abs_expr()) -> no_return().
+-spec convert(mod_name(),abs_type(),state()) -> rich_result2(fin_type(),state()).
+-spec convert(mod_name(),abs_type(),state(),stack(),var_dict()) -> rich_result2(ret_type(),state()).
+-spec concat_bitstrings([bitstring()]) -> bitstring().
+-spec concat_bitstrings_tr([bitstring()],bitstring()) -> bitstring().
+-spec concat_binary_gens(fin_type(),fin_type()) -> fin_type().
+-spec convert_fun(mod_name(),arity(),abs_type(),state(),stack(),var_dict()) -> rich_result2(ret_type(),state()).
+-spec convert_rec_fun(arity(),rec_fun(),rec_args(),state()) -> {'ok',ret_type(),state()}.
+-spec convert_list(mod_name(),boolean(),abs_type(),state(),stack(),var_dict()) -> rich_result2(ret_type(),state()).
+-spec convert_rec_list(rec_fun(),rec_args(),boolean()) -> {rec_fun(),rec_args()}.
+-spec convert_normal_rec_list(rec_fun(),rec_args(),boolean()) -> {rec_fun(),rec_args()}.
+-spec convert_tuple(mod_name(),[abs_type()],boolean(),state(),stack(),var_dict()) -> rich_result2(ret_type(),state()).
+-spec convert_union(mod_name(),[abs_type()],state(),stack(),var_dict()) -> rich_result2(ret_type(),state()).
+-spec process_choice(ret_type(),{[ret_type()],[ret_type()],[ret_type()]},stack()) -> {[ret_type()],[ret_type()],[ret_type()]}.
+-spec no_list_inst_rec_fun(rec_fun(),pos_integer(),[position()]) -> rec_fun().
+-spec list_inst_rec_fun(rec_fun(),pos_integer(),[position()],boolean(),position()) -> rec_fun().
+-spec convert_maybe_hard_adt(mod_name(),type_name(),[abs_type()],state(),stack(),var_dict()) -> rich_result2(ret_type(),state()).
+-spec convert_custom(mod_name(),mod_name(),type_name(),[abs_type()],state(),stack(),var_dict()) -> rich_result2(ret_type(),state()).
+-spec convert_record(mod_name(),type_name(),[abs_type()],state(),stack(),var_dict()) -> rich_result2(ret_type(),state()).
+-spec convert_type(type_ref(),full_type_ref(),state(),stack()) -> rich_result2(ret_type(),state()).
+-spec convert_new_type(type_ref(),full_type_ref(),type_repr(),state(),stack()) -> rich_result2(ret_type(),state()).
+-spec cache_type(mod_name(),type_ref(),fin_type(),abs_type(),symb_info(),state()) -> state().
+-spec convert_maybe_rec(full_type_ref(),symb_info(),rec_fun(),rec_args(),state(),stack()) -> rich_result2(ret_type(),state()).
+-spec safe_convert_maybe_rec(full_type_ref(),symb_info(),rec_fun(),rec_args(),state()) -> rich_result2(ret_type(),state()).
+-spec convert_rec_type(symb_info(),rec_fun(),[position()],rec_args(),state()) -> {'ok',ret_type(),state()}.
+-spec y(fun((fun((T) -> S)) -> fun((T) -> S))) -> fun((T) -> S).
+-spec process_list(mod_name(),[abs_type() | ret_type()],state(),stack(),var_dict()) -> rich_result2([ret_type()],state()).
+-spec convert_integer(abs_expr(),state()) -> rich_result2(ret_type(),state()).
+-spec eval_int(abs_expr()) -> tagged_result(integer()).
+-spec expr_error(atom(),abs_expr()) -> {'error',term()}.
+-spec expr_error(atom(),abs_expr(),abs_expr()) -> {'error',term()}.
+-spec base_case_error(stack()) -> {'error',term()}.
+-spec stack_position(full_type_ref(),stack()) -> 'none' | pos_integer().
+-spec partition_by_toplevel(rec_args(),stack(),boolean()) -> {rec_args(),[position()],rec_args(),[position()]}.
+-spec at_toplevel(rec_args(),stack()) -> boolean().
+-spec partition_rec_args(full_type_ref(),rec_args(),boolean()) -> {rec_args(),[position()],rec_args(),[position()]}.
+-spec combine_ret_types([ret_type()],{'tuple',boolean()} | 'union' | 'wunion') -> ret_type().
+-spec tuple_rec_fun(rec_fun_info(),boolean()) -> rec_fun().
+-spec union_rec_fun(rec_fun_info()) -> rec_fun().
+-spec wunion_rec_fun(rec_fun_info()) -> rec_fun().
+-spec add_ret_type(ret_type(),{[rec_fun()],[rec_args()],non_neg_integer()}) -> {[rec_fun()],[rec_args()],non_neg_integer()}.
+-spec is_simple_ret_type(ret_type()) -> boolean().
+-spec clean_rec_args(rec_args()) -> rec_args().
+-spec soft_clean_rec_args(rec_args(),rec_fun_info(),boolean()) -> rec_args().
+-spec soft_clean_rec_args_tr(rec_args(),rec_args(),rec_fun_info(),boolean(),boolean(),position()) -> rec_args().
+-spec get_group(pos_integer(),[non_neg_integer()]) -> pos_integer().
+-spec get_group_tr(pos_integer(),[non_neg_integer()],pos_integer()) -> pos_integer().
+-spec same_full_type_ref(full_type_ref(),term()) -> boolean().
+-spec same_ret_type(ret_type(),ret_type()) -> boolean().
+-spec same_rec_arg(rec_arg(),rec_arg(),arity()) -> boolean().
+-spec same_substs_dict(substs_dict(),substs_dict()) -> boolean().
+-spec same_fin_type(fin_type(),fin_type()) -> boolean().
+-spec same_rec_fun(rec_fun(),rec_fun(),arity()) -> boolean().
+
+%% File: "_build/default/lib/proper/src/proper_unicode.erl"
+%% --------------------------------------------------------
+-spec unicode_codepoint(1..4) -> proper_types:type().
+-spec unicode_codepoint_upto(1..4) -> proper_types:type().
+-spec utf8() -> proper_types:type().
+-spec utf8(nonnegextint()) -> proper_types:type().
+-spec utf8(nonnegextint(),1..4) -> proper_types:type().
+-spec vector_upto('inf' | integer(),proper_types:type()) -> proper_types:type().
+
+%% File: "_build/default/lib/proper/src/proper_unused_imports_remover.erl"
+%% -----------------------------------------------------------------------
+-spec parse_transform([abs_form()],[compile:option()]) -> [abs_form()].
+-spec parse([abs_form()],[abs_form()],[abs_form()]) -> [abs_form()].
+-spec use_new_imports(imp_dict(),[abs_form()]) -> [abs_form()].
+-spec mark_used_imports(imp_dict(),[abs_form()]) -> imp_dict().
+-spec scan_forms(abs_form(),imp_dict()) -> imp_dict().
+-spec brutal_scan(abs_form() | [abs_form()],imp_dict()) -> imp_dict().
+-spec maybe_update_dict(key(),imp_dict()) -> imp_dict().
+-spec to_dict([abs_form()]) -> imp_dict().
+-spec to_dict([abs_form()],imp_dict()) -> imp_dict().
+-spec new_import_attributes(imp_dict()) -> [abs_form()].
+-spec add_new_attribute(lmf(),[abs_form()]) -> [abs_form()].
+
+%% File: "_build/default/lib/proper/src/strip_types.erl"
+%% -----------------------------------------------------
+-spec parse_transform([erl_parse:abstract_form()],[compile:option()]) -> [erl_parse:abstract_form()].
+-spec strip_types([any()],[any()]) -> [any()].
+
+%% File: "_build/default/lib/proper/src/vararg.erl"
+%% ------------------------------------------------
+-spec parse_transform([abs_form()],[compile:option()]) -> [abs_form()].
+-spec process(term()) -> term().
+-spec add_vararg_wrapper(abs_expr(),abs_expr(),abs_expr()) -> abs_expr().
+-spec wrapper_clauses(arity(),abs_expr()) -> [abs_clause(),...].
+-spec wrapper_clauses(arity(),arity(),abs_expr(),[abs_clause()],[abs_expr()],abs_expr()) -> [abs_clause(),...].
+-spec wrapper_clause(arity(),abs_expr(),[abs_expr()],abs_expr()) -> abs_clause().
+
+%% File: "src/proper_dialyzer.erl"
+%% -------------------------------
+-spec gen() -> proper_types:type().
